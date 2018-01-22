@@ -23,6 +23,12 @@ dependencies:
 - base >= 4.7 && < 5
 - array >= 0.5.2
 - mtl >= 2.2.1
+- bytestring == 0.10.8.2
+
+include-dirs: src/cbits
+c-sources: src/cbits/lookup3.c
+cc-options: -O3
+install-includes: lookup3.h
 
 library:
   source-dirs: src
@@ -35,6 +41,7 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -O2
     dependencies:
     - bloom-filter
 
