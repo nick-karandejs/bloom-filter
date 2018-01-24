@@ -47,7 +47,7 @@ executables:
 
 tests:
   bloom-filter-test:
-    main:                Spec.hs
+    main:                BloomCheck.hs
     source-dirs:         test
     ghc-options:
     - -threaded
@@ -55,3 +55,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - bloom-filter
+    - QuickCheck == 2.10.1
+    - random == 1.1
