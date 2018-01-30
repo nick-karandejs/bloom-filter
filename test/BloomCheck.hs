@@ -11,6 +11,20 @@ import qualified Data.ByteString.Lazy as Lazy
 
 import Test.QuickCheck
 
+
+instance Arbitrary Lazy.ByteString where
+    arbitrary = Lazy.pack `fmap` arbitrary
+
+instance CoArbitrary Lazy.ByteString where
+    coarbitrary = coarbitrary . Lazy.unpack
+
+instance Arbitrary Strict.ByteString where
+    arbitrary = Strict.pack `fmap` arbitrary
+
+instance CoArbitrary Strict.ByteString where
+    coarbitrary = coarbitrary . Strict.unpack
+
+
 handyCheck :: Testable a => Int -> a -> IO ()
 handyCheck limit =
     quickCheckWith $ stdArgs { maxSuccess = limit }
@@ -39,4 +53,5 @@ prop_all_present elements =
 main :: IO ()
 main = do
     handyCheck 1000 (prop_one_present :: String -> Property)
+    handyCheck 1000 (prop_all_present :: [Lazy.ByteString] -> Property)
     handyCheck 1000 (prop_all_present :: [String] -> Property)
