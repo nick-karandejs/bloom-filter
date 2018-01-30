@@ -50,6 +50,19 @@ prop_all_present elements =
         B.easyList errRate elements =~> \bfilter ->
             all (flip B.elem $ bfilter) elements
 
+prop_suggestions_sane =
+    forAll genFalsePositiveRate $ \errRate ->
+        forAll (choose (1, fromIntegral maxWord32 `div` 8)) $ \maxCapacity ->
+            let size = fst . minimum $ B.suggestSizes maxCapacity errRate
+                isSane (numBits, numHashes) =
+                    numBits > 0 && numBits < maxBound && numHashes > 0
+            -- filter out some inputs for the test case
+            in  size < fromIntegral maxWord32 ==>
+                    either (const False) isSane $
+                        B.suggestParams maxCapacity errRate
+        where maxWord32 = maxBound :: Word32
+
+
 main :: IO ()
 main = do
     handyCheck 1000 (prop_one_present :: String -> Property)
