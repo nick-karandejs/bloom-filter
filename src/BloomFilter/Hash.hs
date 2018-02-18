@@ -106,9 +106,10 @@ hash2 k salt = hashSalt salt k
 
 -- | Generates a number of hashes from given value
 doubleHash :: Hashable a => Int -> a -> [Word32]
-doubleHash numHashes value =
-    [h1 + h2 * i | i <- [0..num]]
-    where num = fromIntegral numHashes
+doubleHash numHashes value = go 0
+    where go n | n == num = []
+               | otherwise = h1 + h2 * n : go (n + 1)
+          num = fromIntegral numHashes
           h = hashSalt 0x9150a946c4a8966e value
-          h1 = fromIntegral (h `shiftR` 32) .&. maxBound
-          h2 = fromIntegral h
+          !h1 = fromIntegral (h `shiftR` 32) .&. maxBound
+          !h2 = fromIntegral h
